@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">BMI Application</string>
+    <string name="weight">Enter Your Weight</string>
+    <string name="heightF">Enter Your Height (in ft).</string>
+    <string name="heightI">Enter Your Height (in inch).</string>
+
+</resources>

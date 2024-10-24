@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="About">About_Page</string>
+    <string name="AboutUs">About You SE Co. KG (stylized as ABOUT YOU) is a German fashion online retailer based in Hamburg.
+        Founded in 2014 as a subsidiary of Otto Group,in 2018 its status changed to that of a portfolio company due to a
+        shift in the shareholder balance. Besides Germany, the retailer is active in 24 European countries.
+        The private label Edited is also sold in traditional retail stores.
+    </string>
+
+</resources>
