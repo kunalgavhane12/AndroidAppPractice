@@ -30,12 +30,14 @@
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
-            <!-- Meta-data to specify USB device filter -->
-            <meta-data
-                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-                android:resource="@xml/device_filter" />
         </activity>
 
+        <!-- Exported receiver for handling USB permissions -->
+        <receiver
+            android:name=".MainActivity$usbReceiver"
+            android:exported="false"
+        android:permission="android.permission.USB_PERMISSION"
+            tools:ignore="MissingClass" />
     </application>
 
 </manifest>
