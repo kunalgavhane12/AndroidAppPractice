@@ -19,6 +19,7 @@ import java.util.Map;
 
 public class UsbBroadcastReceiver extends BroadcastReceiver {
     private TextView statusTextView;
+    private TextView dataTextView;
     public static UsbDeviceConnection connection;
     public static List<UsbSerialDriver> availableDrivers;
     public static UsbSerialDriver driver;
@@ -27,8 +28,9 @@ public class UsbBroadcastReceiver extends BroadcastReceiver {
     public static UsbDevice device = null;
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
 
-    public UsbBroadcastReceiver(TextView statusTextView) {
+    public UsbBroadcastReceiver(TextView statusTextView, TextView dataTextView) {
         this.statusTextView = statusTextView;
+        this.dataTextView = dataTextView;
     }
 
     @Override
