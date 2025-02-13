@@ -1,0 +1,39 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.serialinterfaceapp">
+
+    <!-- Permission for USB device access -->
+    <uses-feature android:name="android.hardware.usb.host"/>
+    <uses-permission android:name="android.permission.USB_PERMISSION"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="SerialInterfaceApp"
+        android:theme="@style/MyAppTheme">
+
+        <!-- Main activity definition -->
+        <activity
+            android:name=".MainActivity"
+            android:label="SerialInterfaceApp"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/devices"
+                />
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_DETACHED"
+                android:resource="@xml/devices"
+                />
+        </activity>
+
+    </application>
+
+</manifest>
