@@ -3,6 +3,7 @@ package com.example.serialinterfaceapp;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +23,10 @@ public class MainActivity extends AppCompatActivity {
         dataTextView = findViewById(R.id.dataTextView);
         refreshButton = findViewById(R.id.refreshButton);
         usbReceiver = new UsbBroadcastReceiver(statusTextView, dataTextView );
+        load();
+    }
 
+    private void load(){
         IntentFilter filter = new IntentFilter();
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);

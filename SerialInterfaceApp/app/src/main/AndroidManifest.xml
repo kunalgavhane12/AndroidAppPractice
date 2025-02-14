@@ -1,9 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.serialinterfaceapp">
 
-    <!-- Permission for USB device access -->
+    <!-- USB Host Feature -->
     <uses-feature android:name="android.hardware.usb.host"/>
+
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.USB_PERMISSION"/>
+    <uses-permission android:name="android.hardware.usb.host"/>
 
     <application
         android:allowBackup="true"
@@ -11,29 +14,24 @@
         android:label="SerialInterfaceApp"
         android:theme="@style/MyAppTheme">
 
-        <!-- Main activity definition -->
         <activity
             android:name=".MainActivity"
             android:label="SerialInterfaceApp"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
-            </intent-filter>
-            <meta-data
-                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-                android:resource="@xml/devices"
-                />
-            <meta-data
-                android:name="android.hardware.usb.action.USB_DEVICE_DETACHED"
-                android:resource="@xml/devices"
-                />
         </activity>
 
-    </application>
+        <!-- USB Device Filters -->
+        <meta-data
+            android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+            android:resource="@xml/devices"/>
+        <meta-data
+            android:name="android.hardware.usb.action.USB_DEVICE_DETACHED"
+            android:resource="@xml/devices"/>
 
+    </application>
 </manifest>
