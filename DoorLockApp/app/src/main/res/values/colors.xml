@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#424242</color>
+    <color name="colorPrimaryDark">#353333</color>
+    <color name="colorAccent">#158e00</color>
+    <color name="accent_color">@color/teal</color>
+    <color name="cyan">#00ACED</color>
+    <color name="emerald">#2ECC71</color>
+    <color name="sunflower">#F1C40F</color>
+    <color name="alizarin">#E74C3C</color>
+    <color name="teal">#00BAEC</color>
+    <color name="orange">#f39c12</color>
+
+</resources>
