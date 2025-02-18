@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DoorLockUnlock</string>
+    <string name="app_title">USB Serial Door</string>
+    <string name="devices">USB Devices</string>
+</resources>
