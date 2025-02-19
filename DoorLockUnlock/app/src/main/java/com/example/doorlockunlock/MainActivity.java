@@ -31,60 +31,53 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+//        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
         if(savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.main, new DevicesFragment(), "device").commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment, new DevicesFragment(), "device").commit();
         } else {
             onBackStackChanged();
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+//        txtStatus = findViewById(R.id.txtStatus);
+//        btnLock = findViewById(R.id.btnLock);
+//        btnUnlock = findViewById(R.id.btnUnlock);
+//
+//        UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+//        HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
+//
 
-
-        txtStatus = findViewById(R.id.txtStatus);
-        btnLock = findViewById(R.id.btnLock);
-        btnUnlock = findViewById(R.id.btnUnlock);
-
-        UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
-
-
-        btnLock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              /*  new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Confirm")
-                        .setMessage("Are you sure you want to lock the door?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(MainActivity.this, "Door Locked", Toast.LENGTH_SHORT).show();
-                                txtStatus.setText("Door Locked");
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, null)
-                        .show();*/
-                Toast.makeText(MainActivity.this, "Door Locked", Toast.LENGTH_SHORT).show();
-                txtStatus.setText("Door Locked");
-            }
-        });
-
-        btnUnlock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Door Unlocked", Toast.LENGTH_SHORT).show();
-                txtStatus.setText("Door Unlocked");
-            }
-        });
+//        btnLock.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//              /*  new AlertDialog.Builder(MainActivity.this)
+//                        .setTitle("Confirm")
+//                        .setMessage("Are you sure you want to lock the door?")
+//                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                Toast.makeText(MainActivity.this, "Door Locked", Toast.LENGTH_SHORT).show();
+//                                txtStatus.setText("Door Locked");
+//                            }
+//                        })
+//                        .setNegativeButton(android.R.string.no, null)
+//                        .show();*/
+//                Toast.makeText(MainActivity.this, "Door Locked", Toast.LENGTH_SHORT).show();
+//                txtStatus.setText("Door Locked");
+//            }
+//        });
+//
+//        btnUnlock.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(MainActivity.this, "Door Unlocked", Toast.LENGTH_SHORT).show();
+//                txtStatus.setText("Door Unlocked");
+//            }
+//        });
     }
 
     @Override

@@ -2,4 +2,6 @@
     <string name="app_name">DoorLockUnlock</string>
     <string name="app_title">USB Serial Door</string>
     <string name="devices">USB Devices</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
