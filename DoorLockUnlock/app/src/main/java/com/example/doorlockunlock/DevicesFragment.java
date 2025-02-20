@@ -41,8 +41,8 @@ public class DevicesFragment extends ListFragment {
 
     private final ArrayList<ListItem> listItems = new ArrayList<>();
     private ArrayAdapter<ListItem> listAdapter;
-    private int baudRate = 19200;
-    private boolean withIoManager = true;
+    private int baudRate = 115200;
+    private boolean withIoManager = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,6 +74,7 @@ public class DevicesFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         setListAdapter(null);
         View header = getActivity().getLayoutInflater().inflate(R.layout.device_list_header, null, false);
+//        View header = getActivity().getLayoutInflater().inflate(R.layout.fragment_terminal, null, false);
         getListView().addHeaderView(header, null, false);
         setEmptyText("<no USB devices found>");
         ((TextView) getListView().getEmptyView()).setTextSize(18);

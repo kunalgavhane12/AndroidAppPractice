@@ -39,45 +39,11 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
         if(savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.fragment, new DevicesFragment(), "device").commit();
+//            getSupportFragmentManager().beginTransaction().add(R.id.fragment, new TerminalFragment(), "device").commit();
         } else {
             onBackStackChanged();
         }
 
-//        txtStatus = findViewById(R.id.txtStatus);
-//        btnLock = findViewById(R.id.btnLock);
-//        btnUnlock = findViewById(R.id.btnUnlock);
-//
-//        UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-//        HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
-//
-
-//        btnLock.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//              /*  new AlertDialog.Builder(MainActivity.this)
-//                        .setTitle("Confirm")
-//                        .setMessage("Are you sure you want to lock the door?")
-//                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                Toast.makeText(MainActivity.this, "Door Locked", Toast.LENGTH_SHORT).show();
-//                                txtStatus.setText("Door Locked");
-//                            }
-//                        })
-//                        .setNegativeButton(android.R.string.no, null)
-//                        .show();*/
-//                Toast.makeText(MainActivity.this, "Door Locked", Toast.LENGTH_SHORT).show();
-//                txtStatus.setText("Door Locked");
-//            }
-//        });
-//
-//        btnUnlock.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(MainActivity.this, "Door Unlocked", Toast.LENGTH_SHORT).show();
-//                txtStatus.setText("Door Unlocked");
-//            }
-//        });
     }
 
     @Override
@@ -92,9 +58,11 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     }
 
     @Override
-    public void onNewIntent(Intent intent) {
-        if ("android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(intent.getAction())) {
-            txtStatus.setText("USB Device detected");
+    protected void onNewIntent(Intent intent) {
+        if("android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(intent.getAction())) {
+            TerminalFragment terminal = (TerminalFragment)getSupportFragmentManager().findFragmentByTag("terminal");
+            if (terminal != null)
+                terminal.status("USB device detected");
         }
         super.onNewIntent(intent);
     }
