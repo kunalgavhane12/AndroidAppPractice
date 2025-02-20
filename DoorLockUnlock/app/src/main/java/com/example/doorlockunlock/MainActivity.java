@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        EdgeToEdge.enable(this);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
         if(savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.fragment, new DevicesFragment(), "device").commit();
-//            getSupportFragmentManager().beginTransaction().add(R.id.fragment, new TerminalFragment(), "device").commit();
         } else {
             onBackStackChanged();
         }

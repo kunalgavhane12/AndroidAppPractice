@@ -25,10 +25,20 @@
             android:id="@+id/txtStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Status"
+            android:text="Status: Unlock"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"/>
+        <ImageButton
+            android:id="@+id/btnLockImg"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#000000"
+            android:src="@drawable/ic_baseline_unlock_outline_24"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:padding="10dp"/>
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnLock"
@@ -49,7 +59,7 @@
     <View
         android:layout_width="match_parent"
         android:background="?android:attr/listDivider"
-        android:layout_height="2dp" />
+        android:layout_height="2dp"/>
 
     <TextView
         android:id="@+id/receive_text"

@@ -32,7 +32,6 @@ android {
 }
 
 dependencies {
-
     implementation("com.github.mik3y:usb-serial-for-android:3.8.1")
     implementation(libs.appcompat)
     implementation(libs.material)

@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -59,11 +60,11 @@ public class TerminalFragment extends Fragment implements SerialInputOutputManag
     private final Handler mainLooper;
     private TextView receiveText;
     private ControlLines controlLines;
-
     private SerialInputOutputManager usbIoManager;
     private UsbSerialPort usbSerialPort;
     private UsbPermission usbPermission = UsbPermission.Unknown;
     private boolean connected = false;
+    private int flag = 0;
 
     public TerminalFragment() {
         broadcastReceiver = new BroadcastReceiver() {
@@ -140,13 +141,36 @@ public class TerminalFragment extends Fragment implements SerialInputOutputManag
 
         }
         // Find Views
+        ImageButton btnLockImg = view.findViewById(R.id.btnLockImg);
         TextView txtStatus = view.findViewById(R.id.txtStatus);
         Button btnLock = view.findViewById(R.id.btnLock);
         Button btnUnlock = view.findViewById(R.id.btnUnlock);
 
         // Set Button Click Listeners
-        btnLock.setOnClickListener(v -> txtStatus.setText("Locked"));
-        btnUnlock.setOnClickListener(v -> txtStatus.setText("Unlocked"));
+        btnLockImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(flag == 0) {
+                    btnLockImg.setImageResource(R.drawable.ic_baseline_lock_open_24);
+                    txtStatus.setText("Unlocked");
+                    flag = 1;
+                } else {
+                    btnLockImg.setImageResource(R.drawable.ic_baseline_unlock_outline_24);
+                    txtStatus.setText("Locked");
+                    flag = 0;
+                }
+            }
+        });
+
+        btnLock.setOnClickListener(v -> {
+            txtStatus.setText("Locked");
+            btnLockImg.setImageResource(R.drawable.ic_baseline_unlock_outline_24);
+        });
+
+        btnUnlock.setOnClickListener(v -> {
+            txtStatus.setText("Unlocked");
+            btnLockImg.setImageResource(R.drawable.ic_baseline_lock_open_24);
+        });
         return view;
     }
 
