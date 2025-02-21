@@ -82,13 +82,13 @@
         android:id="@+id/signupText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
         android:text="@string/signup_text"
-        android:textSize="14sp"
+        android:background="@drawable/text_hover_effect"
         android:textAlignment="center"
         android:textColor="@color/purple"
+        android:padding="8dp"
+        android:textSize="14sp"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/text_hover_effect"
         android:clickable="true"
         android:focusable="true"/>
 <!--        android:background="?attr/selectableItemBackground" />-->
