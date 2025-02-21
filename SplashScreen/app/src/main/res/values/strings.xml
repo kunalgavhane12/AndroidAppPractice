@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Splash Screen</string>
+    <string name="signup_text">Don\'t have an account? <u>Sign up</u></string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="login_header">Login</string>
+</resources>
