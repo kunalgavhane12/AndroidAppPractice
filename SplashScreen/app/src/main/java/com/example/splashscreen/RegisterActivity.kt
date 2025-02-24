@@ -54,6 +54,7 @@ class RegisterActivity : AppCompatActivity() {
 
         signInText.setOnClickListener {
             startActivity(Intent(this, SignInActivity::class.java))
+            finish()
         }
 
         signUpButton.setOnClickListener {
