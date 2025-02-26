@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#2A6B76"
+    android:focusableInTouchMode="true">
+
+    <!-- Header section with title and button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <!-- Device Text -->
+        <TextView
+            android:id="@+id/txtDevice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Available Devices"
+            android:textColor="@android:color/white"
+            android:layout_weight="1"
+            android:textSize="24sp"/>
+
+        <!-- Scan Button -->
+        <Button
+            android:id="@+id/StartScanButton"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Scan"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- ListView for displaying devices -->
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+</LinearLayout>

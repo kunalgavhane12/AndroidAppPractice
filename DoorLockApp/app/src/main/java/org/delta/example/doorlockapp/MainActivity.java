@@ -5,29 +5,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentManager;
 
-public class MainActivity extends AppCompatActivity {
-
-    private Button getDoorStatusButton;
-    private ImageButton buttonSend, btnUnlock;
-    private TextView textAck;
-    private boolean isLocked = true; // Initial state is locked
+public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-
-        // Initialize views
-        buttonSend = findViewById(R.id.buttonSend);
-        btnUnlock = findViewById(R.id.btnUnlock);
-        textAck = findViewById(R.id.textAck);
 
         // Set up window insets to handle system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -36,22 +29,26 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Lock button click listener (sets lock state to true and updates status)
-        buttonSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isLocked = true;
-                textAck.setText("Locked");
-            }
-        });
+        // Set up window tool bar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
 
-        // Unlock button click listener (sets lock state to false and updates status)
-        btnUnlock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isLocked = false;
-                textAck.setText("Unlocked");
-            }
-        });
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment, new DeviceFragment(), "device").commit();
+        } else {
+            onBackStackChanged();
+        }
+
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(getSupportFragmentManager().getBackStackEntryCount() > 0);
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
