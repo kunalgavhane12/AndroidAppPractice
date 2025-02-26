@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -56,6 +57,13 @@ public class DeviceFragment extends Fragment {
         // Initialize list adapter
         listAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, deviceList);
         listView.setAdapter(listAdapter);
+
+        // Set item click listener
+        listView.setOnItemClickListener((parent, v, position, id) -> {
+            String deviceInfo = deviceList.get(position);
+            // Open new activity with the device info
+            openDeviceDetailsActivity(deviceInfo);
+        });
 
         setHasOptionsMenu(true); // Enable menu options
         return view;
@@ -114,7 +122,7 @@ public class DeviceFragment extends Fragment {
         public void onScanResult(int callbackType, ScanResult result) {
             BluetoothDevice device = result.getDevice();
             if (device != null) {
-                String deviceInfo = (device.getName() != null ? device.getName(): "Unknown") + " - " + device.getAddress();
+                String deviceInfo = (device.getName() != null ? device.getName() : "Unknown") + " - " + device.getAddress();
                 // Avoid duplicate entries
                 if (uniqueDevices.add(deviceInfo)) {
                     deviceList.add(deviceInfo);
@@ -128,6 +136,23 @@ public class DeviceFragment extends Fragment {
         stopScan();
         Toast.makeText(getContext(), "Disconnected from devices", Toast.LENGTH_SHORT).show();
     }
+
+    private void openDeviceDetailsActivity(String deviceInfo) {
+        // Create a new instance of TerminalFragment
+        TerminalFragment terminalFragment = new TerminalFragment();
+
+        // Create a Bundle to pass the device information to the fragment
+        Bundle bundle = new Bundle();
+        bundle.putString("DEVICE_INFO", deviceInfo);
+        terminalFragment.setArguments(bundle);
+
+        // Begin a fragment transaction to replace the current fragment with TerminalFragment
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment, terminalFragment)
+                .addToBackStack(null) // Add to back stack to allow navigation back
+                .commit();
+    }
+
 
     @Override
     public void onDestroy() {

@@ -2,29 +2,27 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2A6B76"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".MainActivity">
+    android:gravity="center">
 
     <!-- Status Layout (Device Status & Door Status in One Line) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_marginTop="20dp"
         android:gravity="center">
 
         <!-- Device Status Label -->
         <TextView
             android:id="@+id/txtDeviceStatus"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="Device Status: "
             android:textColor="#FFFFFF"
             android:textSize="20sp"
@@ -33,9 +31,8 @@
         <!-- Device Status Value -->
         <TextView
             android:id="@+id/DeviceStatus"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="None"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
@@ -46,9 +43,8 @@
         <!-- Door Status Label -->
         <TextView
             android:id="@+id/textStatus"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="Door Status: "
             android:textColor="#FFFFFF"
             android:textSize="20sp"
@@ -57,9 +53,8 @@
         <!-- Door Status Value -->
         <TextView
             android:id="@+id/textAck"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="None"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
