@@ -10,20 +10,16 @@
     android:padding="16dp"
     android:gravity="center">
 
-    <!-- Status Layout (Device Status & Door Status in One Line) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:gravity="center">
-
+        android:orientation="horizontal">
         <!-- Device Status Label -->
         <TextView
             android:id="@+id/txtDeviceStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Device Status: "
+            android:text="Device : "
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"/>
@@ -39,6 +35,21 @@
             android:gravity="center"
             android:maxLines="1"
             android:ellipsize="end"/>
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/btnConnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect"/>
+
+    <!-- Status Layout (Device Status & Door Status in One Line) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        >
 
         <!-- Door Status Label -->
         <TextView
@@ -71,7 +82,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="60dp"
         android:background="@drawable/button_press_release"
-        app:srcCompat="@drawable/locked"/>
+        app:srcCompat="@drawable/locked"
+        android:enabled="false"/>
 
     <!-- Unlock Button -->
     <ImageButton
@@ -81,6 +93,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
         android:background="@drawable/button_press_release"
-        app:srcCompat="@drawable/unlocked"/>
+        app:srcCompat="@drawable/unlocked"
+        android:enabled="false"/>
 
 </LinearLayout>
