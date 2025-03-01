@@ -66,9 +66,8 @@ public class BLEActivity extends AppCompatActivity {
         DeviceText = findViewById(R.id.txtDevice);
         startScanningButton = findViewById(R.id.StartScanButton);
         stopScanningButton = findViewById(R.id.StopScanButton);
-//        disconnectDevice = findViewById(R.id.DisconnectButton);
         ConnectDevice = findViewById(R.id.ConnectDevice);
-        deviceListView = findViewById(R.id.listView1);
+        deviceListView = findViewById(R.id.listView);
         stopScanningButton.setVisibility(View.INVISIBLE);
 
         // Initialize the device list and adapter
@@ -93,20 +92,13 @@ public class BLEActivity extends AppCompatActivity {
         }
 
         DeviceText.setText("Local Device: " +  btAdapter.getName());
-//        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
-//
-//        StringBuilder deviceNames = new StringBuilder("Connected Device(s): ");
-//
-//        if (pairedDevices.size() > 0) {
-//            deviceNames.append("\n");
-//            for (BluetoothDevice device : pairedDevices) {
-//                deviceNames.append(device.getName()).append("\n");
-//            }
-//        } else {
-//            deviceNames.append("No connected devices");
-//        }
-//
-//        ConnectDevice.setText(deviceNames.toString());
+
+        // Check if a device is already connected and update the TextView
+        if (bluetoothGatt != null && connectedDevice != null) {
+            ConnectDevice.setText("Connected Device: " + connectedDevice.getName());
+        } else {
+            ConnectDevice.setText("Connected Device: None");
+        }
 
         // Request necessary permissions
         requestPermissions();
@@ -167,7 +159,6 @@ public class BLEActivity extends AppCompatActivity {
             }
         }
     }
-
     private void requestPermissions() {
         // Request location permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -282,6 +273,7 @@ public class BLEActivity extends AppCompatActivity {
             }
             String deviceName = device.getName();
             String deviceAddress = device.getAddress();
+            Log.d("BLE", "Discovered Device: " + deviceName + " - " + deviceAddress);
 
             // Check if the device is already in the list
             if (deviceName != null && !isDeviceAlreadyAdded(deviceAddress)) {
@@ -419,6 +411,8 @@ public class BLEActivity extends AppCompatActivity {
                         // for ActivityCompat#requestPermissions for more details.
                         return;
                     }
+                    connectedDevice = gatt.getDevice();
+                    ConnectDevice.setText("Connected Device: " + connectedDevice.getName());
                     Toast.makeText(BLEActivity.this, "Connected to " + gatt.getDevice().getName(), Toast.LENGTH_SHORT).show();
                     Log.i("BLE", "Connected to " + gatt.getDevice().getName());
                 });
@@ -432,8 +426,10 @@ public class BLEActivity extends AppCompatActivity {
             } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
                 // Device disconnected
                 runOnUiThread(() -> {
+                    ConnectDevice.setText("Connected Device: None");
                     Toast.makeText(BLEActivity.this, "Disconnected from " + gatt.getDevice().getName(), Toast.LENGTH_SHORT).show();
                     Log.i("BLE", "Disconnected from " + gatt.getDevice().getName());
+                    connectedDevice = null; // Reset the connected device
                 });
             }
         }
