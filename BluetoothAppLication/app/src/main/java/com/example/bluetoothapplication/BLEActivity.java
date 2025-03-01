@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothSocket;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
@@ -33,8 +34,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.UUID;
 
 public class BLEActivity extends AppCompatActivity {
 
@@ -48,6 +50,7 @@ public class BLEActivity extends AppCompatActivity {
     ArrayList<BluetoothDevice> devicesDiscovered = new ArrayList<>();
     ArrayList<String> ListElementsArrayList = new ArrayList<>();
     static BluetoothGatt bluetoothGatt;
+    BluetoothSocket bluetoothSocket;
     ListView deviceListView;
     TextView DeviceText;
     TextView ConnectDevice;
@@ -56,6 +59,7 @@ public class BLEActivity extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 2;
     private static final int PERMISSION_REQUEST_BLUETOOTH_SCAN = 3;
+    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); // Standard SerialPortService ID
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,12 +98,12 @@ public class BLEActivity extends AppCompatActivity {
             return;
         }
 
-        DeviceText.setText("Local Device: " +  btAdapter.getName());
+        DeviceText.setText("Local Device: " + btAdapter.getName());
 
         // Check if a device is already connected and update the TextView
         if (bluetoothGatt != null && connectedDevice != null) {
             ConnectDevice.setText("Connected Device: " + connectedDevice.getName());
-            disconnectDevice.setVisibility(View.INVISIBLE);
+            disconnectDevice.setVisibility(View.VISIBLE);
         } else {
             ConnectDevice.setText("Connected Device: None");
         }
@@ -114,7 +118,11 @@ public class BLEActivity extends AppCompatActivity {
         // Set ListView item click listener
         deviceListView.setOnItemClickListener((parent, view, position, id) -> {
             BluetoothDevice selectedDevice = devicesDiscovered.get(position);
-            connectToDevice(selectedDevice);
+            if (selectedDevice.getType() == BluetoothDevice.DEVICE_TYPE_CLASSIC) {
+                connectToClassicBluetoothDevice(selectedDevice); // Use classic Bluetooth for HC-05
+            } else {
+                connectToDevice(selectedDevice); // Use BLE for ESP32
+            }
         });
 
         // Set disconnect button click listener
@@ -131,7 +139,18 @@ public class BLEActivity extends AppCompatActivity {
                 disconnectDevice.setVisibility(View.INVISIBLE);
                 stopScanningButton.setVisibility(View.INVISIBLE);
                 startScanningButton.setVisibility(View.VISIBLE);
-                ConnectDevice.setText("Connected Device: Disconnected");
+                ConnectDevice.setText("Connected Device: None");
+            } else if (bluetoothSocket != null) {
+                try {
+                    bluetoothSocket.close();
+                    Toast.makeText(this, "Disconnected", Toast.LENGTH_SHORT).show();
+                    disconnectDevice.setVisibility(View.INVISIBLE);
+                    stopScanningButton.setVisibility(View.INVISIBLE);
+                    startScanningButton.setVisibility(View.VISIBLE);
+                    ConnectDevice.setText("Connected Device: None");
+                } catch (IOException e) {
+                    Log.e("ClassicBT", "Error disconnecting", e);
+                }
             }
         });
     }
@@ -167,6 +186,7 @@ public class BLEActivity extends AppCompatActivity {
             }
         }
     }
+
     private void requestPermissions() {
         // Request location permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -218,7 +238,7 @@ public class BLEActivity extends AppCompatActivity {
                     startClassicBluetoothScan();
                 }
 
-                // Stop scanning after 5 seconds
+                // Stop scanning after 10 seconds
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     if (btScanning) {
                         stopScanning();
@@ -382,6 +402,8 @@ public class BLEActivity extends AppCompatActivity {
     }
 
     // Method to connect to a Bluetooth device
+
+    // Method to connect to a Bluetooth device
     private void connectToDevice(BluetoothDevice device) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_REQUEST_BLUETOOTH_SCAN);
@@ -393,12 +415,111 @@ public class BLEActivity extends AppCompatActivity {
             stopScanning();
         }
 
-        // Connect to the device
-        if (bluetoothGatt != null) {
-            bluetoothGatt.close(); // Close any existing connection
+        // Check if a device is already connected
+        if (bluetoothGatt != null || bluetoothSocket != null) {
+            disconnectConnectedDevice(() -> {
+                // After disconnecting, connect to the new device
+                connectToNewDevice(device);
+            });
+        } else {
+            // No device is connected, connect directly
+            connectToNewDevice(device);
         }
+    }
+
+    // Method to disconnect the currently connected device
+    private void disconnectConnectedDevice(Runnable onDisconnected) {
+        if (bluetoothGatt != null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_REQUEST_BLUETOOTH_SCAN);
+                return;
+            }
+            bluetoothGatt.disconnect();
+            bluetoothGatt.close();
+            bluetoothGatt = null;
+            Toast.makeText(this, "Disconnected from previous device", Toast.LENGTH_SHORT).show();
+        } else if (bluetoothSocket != null) {
+            try {
+                bluetoothSocket.close();
+                Toast.makeText(this, "Disconnected from previous device", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                Log.e("ClassicBT", "Error disconnecting", e);
+            }
+            bluetoothSocket = null;
+        }
+
+        // Reset UI
+        runOnUiThread(() -> {
+            ConnectDevice.setText("Connected Device: None");
+            disconnectDevice.setVisibility(View.INVISIBLE);
+            startScanningButton.setVisibility(View.VISIBLE);
+            stopScanningButton.setVisibility(View.INVISIBLE);
+        });
+
+        // Execute the callback after disconnecting
+        if (onDisconnected != null) {
+            onDisconnected.run();
+        }
+    }
+
+    // Method to connect to a new device
+    private void connectToNewDevice(BluetoothDevice device) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        if (device.getType() == BluetoothDevice.DEVICE_TYPE_CLASSIC) {
+            connectToClassicBluetoothDevice(device); // Use classic Bluetooth for HC-05
+        } else {
+            connectToBLEDevice(device); // Use BLE for ESP32
+        }
+    }
+
+    // Method to connect to a BLE device
+    private void connectToBLEDevice(BluetoothDevice device) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_REQUEST_BLUETOOTH_SCAN);
+            return;
+        }
+
         bluetoothGatt = device.connectGatt(this, false, gattCallback);
         Toast.makeText(this, "Connecting to " + device.getName(), Toast.LENGTH_SHORT).show();
+    }
+
+    // Method to connect to a classic Bluetooth device
+    private void connectToClassicBluetoothDevice(BluetoothDevice device) {
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_REQUEST_BLUETOOTH_SCAN);
+                return;
+            }
+            bluetoothSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
+            bluetoothSocket.connect(); // Connect to the device
+
+            // Update UI
+            runOnUiThread(() -> {
+                ConnectDevice.setText("Connected Device: " + device.getName());
+                disconnectDevice.setVisibility(View.VISIBLE);
+                startScanningButton.setVisibility(View.INVISIBLE);
+                stopScanningButton.setVisibility(View.INVISIBLE);
+                Toast.makeText(BLEActivity.this, "Connected to " + device.getName(), Toast.LENGTH_SHORT).show();
+            });
+
+            // Handle communication with the device (e.g., using InputStream and OutputStream)
+            // Example:
+            // InputStream inputStream = bluetoothSocket.getInputStream();
+            // OutputStream outputStream = bluetoothSocket.getOutputStream();
+
+        } catch (IOException e) {
+            Log.e("ClassicBT", "Error connecting to device", e);
+            runOnUiThread(() -> Toast.makeText(BLEActivity.this, "Failed to connect", Toast.LENGTH_SHORT).show());
+        }
     }
 
     // BluetoothGattCallback to handle connection events
@@ -410,13 +531,6 @@ public class BLEActivity extends AppCompatActivity {
                 // Device connected
                 runOnUiThread(() -> {
                     if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
                         return;
                     }
                     connectedDevice = gatt.getDevice();
@@ -452,26 +566,9 @@ public class BLEActivity extends AppCompatActivity {
                 // Services discovered
                 runOnUiThread(() -> {
                     if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
                         return;
                     }
                     Toast.makeText(BLEActivity.this, "Services discovered for " + gatt.getDevice().getName(), Toast.LENGTH_SHORT).show();
-                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
-                    }
                     Log.i("BLE", "Services discovered for " + gatt.getDevice().getName());
                 });
             } else {
