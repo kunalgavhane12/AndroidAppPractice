@@ -66,8 +66,11 @@ public class BLEActivity extends AppCompatActivity {
         DeviceText = findViewById(R.id.txtDevice);
         startScanningButton = findViewById(R.id.StartScanButton);
         stopScanningButton = findViewById(R.id.StopScanButton);
+        disconnectDevice = findViewById(R.id.disconnectDevice);
         ConnectDevice = findViewById(R.id.ConnectDevice);
         deviceListView = findViewById(R.id.listView);
+
+        disconnectDevice.setVisibility(View.INVISIBLE);
         stopScanningButton.setVisibility(View.INVISIBLE);
 
         // Initialize the device list and adapter
@@ -96,6 +99,7 @@ public class BLEActivity extends AppCompatActivity {
         // Check if a device is already connected and update the TextView
         if (bluetoothGatt != null && connectedDevice != null) {
             ConnectDevice.setText("Connected Device: " + connectedDevice.getName());
+            disconnectDevice.setVisibility(View.INVISIBLE);
         } else {
             ConnectDevice.setText("Connected Device: None");
         }
@@ -114,18 +118,22 @@ public class BLEActivity extends AppCompatActivity {
         });
 
         // Set disconnect button click listener
-//        disconnectDevice.setOnClickListener(v -> {
-//            if (bluetoothGatt != null) {
-//                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-//                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_REQUEST_BLUETOOTH_SCAN);
-//                    return;
-//                }
-//                bluetoothGatt.disconnect();
-//                bluetoothGatt.close();
-//                bluetoothGatt = null;
-//                Toast.makeText(this, "Disconnected", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        disconnectDevice.setOnClickListener(v -> {
+            if (bluetoothGatt != null) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_REQUEST_BLUETOOTH_SCAN);
+                    return;
+                }
+                bluetoothGatt.disconnect();
+                bluetoothGatt.close();
+                bluetoothGatt = null;
+                Toast.makeText(this, "Disconnected", Toast.LENGTH_SHORT).show();
+                disconnectDevice.setVisibility(View.INVISIBLE);
+                stopScanningButton.setVisibility(View.INVISIBLE);
+                startScanningButton.setVisibility(View.VISIBLE);
+                ConnectDevice.setText("Connected Device: Disconnected");
+            }
+        });
     }
 
     @Override
@@ -413,6 +421,9 @@ public class BLEActivity extends AppCompatActivity {
                     }
                     connectedDevice = gatt.getDevice();
                     ConnectDevice.setText("Connected Device: " + connectedDevice.getName());
+                    disconnectDevice.setVisibility(View.VISIBLE);
+                    startScanningButton.setVisibility(View.INVISIBLE);
+                    stopScanningButton.setVisibility(View.INVISIBLE);
                     Toast.makeText(BLEActivity.this, "Connected to " + gatt.getDevice().getName(), Toast.LENGTH_SHORT).show();
                     Log.i("BLE", "Connected to " + gatt.getDevice().getName());
                 });
