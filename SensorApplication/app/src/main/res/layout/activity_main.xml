@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Acclero Sensor Values"
+        android:id="@+id/txtAccleroValues"
+        android:textStyle="bold"
+        android:textSize="34sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Proxi Sensor Values"
+        android:id="@+id/txtProximityValues"
+        android:textStyle="bold"
+        android:textSize="34sp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ambinet Sensor Values"
+        android:id="@+id/txtAmbinetLightValues"
+        android:textStyle="bold"
+        android:textSize="34sp"/>
+
+</LinearLayout>
